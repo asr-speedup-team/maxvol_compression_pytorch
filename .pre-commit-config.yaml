@@ -7,3 +7,10 @@ repos:
         stages: [commit]
         language: system
         entry: jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace
+
+      - id: pytests
+        name: pytests
+        stages: [ commit ]
+        language: system
+        entry: python -m pytest tests/
+        pass_filenames: false

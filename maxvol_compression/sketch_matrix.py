@@ -1,7 +1,9 @@
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 
-class SketchMatrixAlg:
+class SketchMatrixAlg(ABC):
     """Class for sketch matrix approximation of streaming data.
     """
     def __init__(self, l, d, keep_original=False):
@@ -13,6 +15,7 @@ class SketchMatrixAlg:
         self._keep_original = keep_original
         self._original = np.empty((0, self.d), dtype=np.float32)
 
+    @abstractmethod
     def append(self, vector):
         pass
         
@@ -23,7 +26,7 @@ class SketchMatrixAlg:
             self._original = np.vstack((self._original, batch))
 
     def save(self, name='sketch_matrix'):
-        np.save(f'{name}.npy', self.sketch_matrix)
+        np.save(f'{name}.npy', self._sketch)
         print(f'Sketch matrix was saved to {name}.npy')
 
     def load(self, filename):
@@ -77,8 +80,8 @@ class FastFrequentDirections(SketchMatrixAlg):
 
     @property
     def sketch_matrix_rotated(self):
-        [_, s, Vt] = np.linalg.svd(self.sketch_matrix, full_matrices=False)
-        return s, Vt
+        [_, s, Vt] = np.linalg.svd(self._sketch, full_matrices=False)
+        return s[:self.l], Vt[:self.l]
 
     @sketch_matrix.setter
     def sketch_matrix(self, value):

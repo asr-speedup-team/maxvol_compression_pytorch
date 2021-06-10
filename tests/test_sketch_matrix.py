@@ -15,6 +15,8 @@ class TestSketchMatrix:
         fds = FastFrequentDirections(150, 400, keep_original=False)
         fds.save('test_save_sketch_matrix')
         assert os.path.exists('test_save_sketch_matrix.npy'), "No file was created during save method"
+        saved_matrix = np.load('test_save_sketch_matrix.npy')
+        assert np.array_equal(fds._sketch, saved_matrix), "Saved and current sketch matrices differ"
         os.remove('test_save_sketch_matrix.npy')
 
     def test_load_fd(self):
@@ -43,6 +45,8 @@ class TestSketchMatrix:
         rs = RandomSums(150, 400, keep_original=False)
         rs.save('test_save_sketch_matrix')
         assert os.path.exists('test_save_sketch_matrix.npy'), "No file was created during save method"
+        saved_matrix = np.load('test_save_sketch_matrix.npy')
+        assert np.array_equal(rs._sketch, saved_matrix), "Saved and current sketch matrices differ"
         os.remove('test_save_sketch_matrix.npy')
 
     def test_load_rs(self):

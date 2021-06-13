@@ -1,3 +1,6 @@
+"""
+https://github.com/jacobgil/pytorch-tensor-decompositions
+"""
 import numpy as np
 from scipy.optimize import minimize_scalar
 

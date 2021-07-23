@@ -6,20 +6,21 @@ import numpy as np
 
 
 class LinearMaxvol(Module):
-    def __init__(self, linear, idxs, V):
+    def __init__(self, linear, idxs, V, device='cpu'):
         super().__init__()
         self.in_features = linear.in_features
         self.out_features = linear.out_features
+        self.device = device
 
         self.idxs = idxs
         with torch.no_grad():
-            self.weight = Parameter(linear.weight[idxs].detach())
+            self.weight = Parameter(linear.weight[idxs].detach()).to(device)
             if linear.bias is not None:
-                self.bias = Parameter(linear.bias[idxs].detach())
+                self.bias = Parameter(linear.bias[idxs].detach()).to(device)
             else:
                 self.register_parameter('bias', None)
-            self.V = Parameter(torch.Tensor(V))
-            self.invSV = Parameter(torch.Tensor(np.linalg.pinv(V[idxs, :])))
+            self.V = Parameter(torch.Tensor(V)).to(device)
+            self.invSV = Parameter(torch.Tensor(np.linalg.pinv(V[idxs, :]))).to(device)
 
     def forward(self, input):
         x = F.linear(input, self.weight, self.bias)
